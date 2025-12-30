@@ -68,6 +68,7 @@
   <button onclick="layoutLR()">左右</button>
   <button onclick="layoutTB()">上下</button>
   <button onclick="layoutPIP()">子母</button>
+  <button onclick="switchCams()">切換</button>
 </div>
 
 <div id="container">
@@ -84,9 +85,12 @@
   const container = document.getElementById('container');
   const main = document.getElementById('main');
   const second = document.getElementById('second');
+  const cam1 = document.getElementById('cam1');
+  const cam2 = document.getElementById('cam2');
 
   function layoutLR() {
     container.style.flexDirection = 'row';
+    main.style.display = 'block';
     second.style.position = 'relative';
     second.style.width = '50%';
     second.style.height = '100%';
@@ -95,6 +99,7 @@
 
   function layoutTB() {
     container.style.flexDirection = 'column';
+    main.style.display = 'block';
     second.style.position = 'relative';
     second.style.width = '100%';
     second.style.height = '50%';
@@ -103,12 +108,21 @@
 
   function layoutPIP() {
     container.style.flexDirection = 'row';
+    main.style.display = 'block';
     second.id = 'pip';
     second.style.position = 'absolute';
     second.style.width = '30%';
     second.style.height = '30%';
+    second.style.left = '';
+    second.style.top = '';
     second.style.right = '20px';
     second.style.bottom = '20px';
+  }
+
+  function switchCams() {
+    const src1 = cam1.src;
+    cam1.src = cam2.src;
+    cam2.src = src1;
   }
 
   /* 拖拉子母畫面 */
@@ -119,14 +133,17 @@
   second.addEventListener('mousedown', e => {
     if (second.id !== 'pip') return;
     isDragging = true;
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
+    offsetX = e.clientX - second.getBoundingClientRect().left;
+    offsetY = e.clientY - second.getBoundingClientRect().top;
+    e.preventDefault(); // 防止文字選取
   });
 
   window.addEventListener('mousemove', e => {
     if (!isDragging) return;
-    second.style.left = (e.pageX - offsetX) + 'px';
-    second.style.top = (e.pageY - offsetY) + 'px';
+    second.style.right = '';
+    second.style.bottom = '';
+    second.style.left = (e.clientX - offsetX) + 'px';
+    second.style.top = (e.clientY - offsetY) + 'px';
   });
 
   window.addEventListener('mouseup', () => {
