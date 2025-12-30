@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>VDO Ninja 監看v2</title>
+<title>VDO Ninja 監看v3</title>
 
 <style>
   html, body {
@@ -16,7 +16,7 @@
   #toolbar {
     position: fixed;
     top: 10px;
-    left: 10px;
+    right: 10px;
     z-index: 1000;
   }
 
@@ -24,6 +24,7 @@
     margin-right: 5px;
     padding: 6px 10px;
     cursor: pointer;
+    font-size: 1.2em;
   }
 
   #container {
@@ -50,29 +51,22 @@
     position: absolute;
     width: 30%;
     height: 30%;
-    right: 20px;
-    bottom: 20px;
+    left: 20px;
+    top: 20px;
     z-index: 10;
-    cursor: move;
-    resize: both;
     overflow: hidden;
     border: 2px solid #555;
   }
-
-  #pip.dragging iframe {
-    pointer-events: none;
-  }
-
 </style>
 </head>
 
 <body>
 
 <div id="toolbar">
-  <button onclick="layoutLR()">左右</button>
-  <button onclick="layoutTB()">上下</button>
-  <button onclick="layoutPIP()">子母</button>
-  <button onclick="switchCams()">切換</button>
+  <button onclick="layoutLR()" title="左右">↔️</button>
+  <button onclick="layoutTB()" title="上下">↕️</button>
+  <button onclick="layoutPIP()" title="子母">🖼️</button>
+  <button onclick="switchCams()" title="切換">🔄</button>
 </div>
 
 <div id="container">
@@ -117,11 +111,11 @@
     second.style.position = 'absolute';
     second.style.width = '30%';
     second.style.height = '30%';
-    second.style.transform = ''; // reset transform
-    second.style.left = '';
-    second.style.top = '';
-    second.style.right = '20px';
-    second.style.bottom = '20px';
+    second.style.transform = '';
+    second.style.right = '';
+    second.style.bottom = '';
+    second.style.left = '20px';
+    second.style.top = '20px';
   }
 
   function switchCams() {
@@ -129,55 +123,6 @@
     cam1.src = cam2.src;
     cam2.src = src1;
   }
-
-  /* 拖拉子母畫面 */
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let startLeft = 0;
-  let startTop = 0;
-
-  second.addEventListener('mousedown', e => {
-    if (second.id !== 'pip') return;
-    isDragging = true;
-    second.classList.add('dragging');
-    
-    startX = e.clientX;
-    startY = e.clientY;
-    
-    const rect = second.getBoundingClientRect();
-    startLeft = rect.left;
-    startTop = rect.top;
-    
-    second.style.right = '';
-    second.style.bottom = '';
-    second.style.left = startLeft + 'px';
-    second.style.top = startTop + 'px';
-    
-    e.preventDefault(); // 防止文字選取
-  });
-
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    
-    second.style.transform = `translate(${dx}px, ${dy}px)`;
-  });
-
-  window.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false;
-    second.classList.remove('dragging');
-    
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-
-    second.style.transform = '';
-    second.style.left = (startLeft + dx) + 'px';
-    second.style.top = (startTop + dy) + 'px';
-  });
 </script>
 
 </body>
