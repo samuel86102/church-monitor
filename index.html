@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>VDO Ninja 監看v3</title>
+<title>VDO Ninja 監看v4</title>
 
 <style>
   html, body {
@@ -67,15 +67,17 @@
   <button onclick="layoutTB()" title="上下">↕️</button>
   <button onclick="layoutPIP()" title="子母">🖼️</button>
   <button onclick="switchCams()" title="切換">🔄</button>
+  <button onclick="zoomIn()">+</button>
+  <button onclick="zoomOut()">-</button>
 </div>
 
 <div id="container">
   <div class="view" id="main">
-    <iframe id="cam1" src="https://vdo.ninja/?view=BUd8zc4&cleanoutput&mute"></iframe>
+    <iframe id="cam1" src="https://vdo.ninja/?view=BUd8zc4"></iframe>
   </div>
 
   <div class="view" id="second">
-    <iframe id="cam2" src="https://vdo.ninja/?view=Lz5qHhz&cleanoutput&mute"></iframe>
+    <iframe id="cam2" src="https://vdo.ninja/?view=Lz5qHhz"></iframe>
   </div>
 </div>
 
@@ -122,6 +124,26 @@
     const src1 = cam1.src;
     cam1.src = cam2.src;
     cam2.src = src1;
+  }
+
+  function zoomIn() {
+    const pip = document.getElementById('pip');
+    if (pip) {
+      let width = parseFloat(pip.style.width);
+      let height = parseFloat(pip.style.height);
+      pip.style.width = (width + 5) + '%';
+      pip.style.height = (height + 5) + '%';
+    }
+  }
+
+  function zoomOut() {
+    const pip = document.getElementById('pip');
+    if (pip) {
+      let width = parseFloat(pip.style.width);
+      let height = parseFloat(pip.style.height);
+      pip.style.width = (width - 5) + '%';
+      pip.style.height = (height - 5) + '%';
+    }
   }
 </script>
 
