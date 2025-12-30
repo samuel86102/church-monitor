@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>VDO Ninja 監看</title>
+<title>VDO Ninja 監看v2</title>
 
 <style>
   html, body {
@@ -59,6 +59,10 @@
     border: 2px solid #555;
   }
 
+  #pip.dragging iframe {
+    pointer-events: none;
+  }
+
 </style>
 </head>
 
@@ -113,6 +117,7 @@
     second.style.position = 'absolute';
     second.style.width = '30%';
     second.style.height = '30%';
+    second.style.transform = ''; // reset transform
     second.style.left = '';
     second.style.top = '';
     second.style.right = '20px';
@@ -127,27 +132,51 @@
 
   /* 拖拉子母畫面 */
   let isDragging = false;
-  let offsetX = 0;
-  let offsetY = 0;
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
 
   second.addEventListener('mousedown', e => {
     if (second.id !== 'pip') return;
     isDragging = true;
-    offsetX = e.clientX - second.getBoundingClientRect().left;
-    offsetY = e.clientY - second.getBoundingClientRect().top;
+    second.classList.add('dragging');
+    
+    startX = e.clientX;
+    startY = e.clientY;
+    
+    const rect = second.getBoundingClientRect();
+    startLeft = rect.left;
+    startTop = rect.top;
+    
+    second.style.right = '';
+    second.style.bottom = '';
+    second.style.left = startLeft + 'px';
+    second.style.top = startTop + 'px';
+    
     e.preventDefault(); // 防止文字選取
   });
 
   window.addEventListener('mousemove', e => {
     if (!isDragging) return;
-    second.style.right = '';
-    second.style.bottom = '';
-    second.style.left = (e.clientX - offsetX) + 'px';
-    second.style.top = (e.clientY - offsetY) + 'px';
+    
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    
+    second.style.transform = `translate(${dx}px, ${dy}px)`;
   });
 
-  window.addEventListener('mouseup', () => {
+  window.addEventListener('mouseup', e => {
+    if (!isDragging) return;
     isDragging = false;
+    second.classList.remove('dragging');
+    
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    second.style.transform = '';
+    second.style.left = (startLeft + dx) + 'px';
+    second.style.top = (startTop + dy) + 'px';
   });
 </script>
 
